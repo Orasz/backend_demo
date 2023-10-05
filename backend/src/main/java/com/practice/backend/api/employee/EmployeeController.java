@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Employee.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping ("/employee")
-    public ResponseEntity<Employee> createEmployee(@RequestBody EmployeeDto employeeDto) throws JsonProcessingException {
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         om.registerModule(new JavaTimeModule());
 
@@ -86,7 +87,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PutMapping ("/employee")
-    public ResponseEntity<Employee> updateEmployee(@RequestBody  Employee employee){
+    public ResponseEntity<Employee> updateEmployee(@Valid @RequestBody  Employee employee){
         Employee retrievedEmployee = employeeService.updateEmployee(employee);
         if(retrievedEmployee == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
