@@ -1,8 +1,5 @@
 package com.practice.backend.api.employee;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.practice.backend.api.employee.dto.EmployeeDto;
 import com.practice.backend.api.employee.model.Employee;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,10 +7,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +23,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    private final Logger logger = LoggerFactory.getLogger("controllerLogger");
+    private final EmployeeFactory employeeFactory;
 
 
     @Operation(
@@ -67,28 +63,25 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Employee.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping ("/employee")
-    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        om.registerModule(new JavaTimeModule());
-
-        logger.info(om.writeValueAsString(employeeDto));
-        Employee employee = EmployeeFactory.DtoToEntity(employeeDto);
-        logger.info(om.writeValueAsString(employee));
-        Employee createdEmployee = employeeService.updateEmployee(employee);
+    @Transactional
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        Employee employee = employeeFactory.DtoToEntity(employeeDto);
+        Employee createdEmployee = employeeService.create(employee);
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
     @Operation(
             summary = "Update an Employee",
-            description = "Update an employee's hobbies. The response is the whole employee entity.",
+            description = "Update an employee's email or hobbies. The response is the whole employee entity.",
             tags = { "employee", "put" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Employee.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
-    @PutMapping ("/employee")
-    public ResponseEntity<Employee> updateEmployee(@Valid @RequestBody  Employee employee){
-        Employee retrievedEmployee = employeeService.updateEmployee(employee);
+    @PutMapping ("/employee/{id}")
+    public ResponseEntity<Employee> updateEmployee(@Valid @RequestBody  EmployeeDto employeeDto, @PathVariable long id){
+        Employee employee = employeeFactory.DtoToEntity(employeeDto);
+        Employee retrievedEmployee = employeeService.updateEmployee(employee, id);
         if(retrievedEmployee == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(retrievedEmployee, HttpStatus.OK);

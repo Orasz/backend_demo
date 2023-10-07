@@ -14,7 +14,7 @@ public class EmployeeDto {
     @Email(message = "email is mandatory.")
     private String email;
 
-    @NotBlank(message = "Name is mandatory.")
+    @NotBlank(message = "name is mandatory.")
     private String fullName;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -1,5 +1,6 @@
 package com.practice.backend.api.employee.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="employee")
@@ -33,13 +35,28 @@ public class Employee {
     private LocalDate birthday;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST,CascadeType.MERGE}
+    )
     @JoinTable(
             name = "employee_hobby",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "hobby_id")
     )
-    Set<Hobby> hobbies;
+    @JsonManagedReference
+    List<Hobby> hobbies = new ArrayList<>();
+
+
+    public void addHobby(Hobby hobby){
+        hobbies.add(hobby);
+        hobby.getEmployees().add(this);
+    }
+
+    public void removeHobby(Hobby hobby){
+        hobbies.remove(hobby);
+        hobby.getEmployees().remove(this);
+    }
 
 
 }
