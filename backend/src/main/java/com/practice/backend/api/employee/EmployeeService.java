@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.practice.backend.api.employee.model.Employee;
+import com.practice.backend.api.employee.repository.EmployeeRepository;
+import com.practice.backend.kafka.consumer.model.EmployeeResignationMessage;
 import com.practice.backend.kafka.producer.MessageProducer;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,28 @@ public class EmployeeService {
         return emp;
     }
 
-    private void handleMessageNotSent(Employee emp) {
+    private void handleMessageNotSent(Object emp) {
         //Do something here
+    }
+
+    public void readResignationMessage(String message) {
+        try {
+            EmployeeResignationMessage receivedMessage = objectMapper.readValue(message, EmployeeResignationMessage.class);
+            deleteEmployee(Long.parseLong(receivedMessage.getEmployeeId()));
+        }
+        catch (JsonProcessingException jsonProcessingException){
+            log.error("Impossible to process the received message. topic: kafka_topic.");
+        }
+    }
+
+    public void writeResignationMessageOnTopic(EmployeeResignationMessage message) {
+        try {
+            String resignationMessageString = objectMapper.writeValueAsString(message);
+            messageProducer.sendMessage("employee-events", resignationMessageString);
+            log.info("Employee with id {} correctly deleted.", message.getEmployeeId());
+        } catch (JsonProcessingException jsonProcessingException) {
+            log.error("Error while serializing message. ex= {}", jsonProcessingException.getMessage());
+            handleMessageNotSent(message);
+        }
     }
 }

@@ -1,11 +1,11 @@
 package com.practice.backend.api.employee.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -44,7 +44,8 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "hobby_id")
     )
-    @JsonManagedReference
+    //@JsonManagedReference
+    @RestResource(exported = false)
     List<Hobby> hobbies = new ArrayList<>();
 
 

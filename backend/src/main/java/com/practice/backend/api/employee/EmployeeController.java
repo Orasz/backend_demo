@@ -2,6 +2,7 @@ package com.practice.backend.api.employee;
 
 import com.practice.backend.api.employee.dto.EmployeeDto;
 import com.practice.backend.api.employee.model.Employee;
+import com.practice.backend.kafka.consumer.model.EmployeeResignationMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +36,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/employee/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id")long id){
+    public ResponseEntity<Employee> getAllEmployees(@PathVariable("id")long id){
         Employee retrievedEmployee = employeeService.findById(id);
         if(retrievedEmployee == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -50,7 +51,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Employee.class), mediaType = "application/json") }),
      })
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getEmployeeById(){
+    public ResponseEntity<List<Employee>> getAllEmployees(){
         List<Employee> retrievedEmployees = employeeService.findAll();
         return new ResponseEntity<>(retrievedEmployees, HttpStatus.OK);
     }
@@ -98,6 +99,12 @@ public class EmployeeController {
     @DeleteMapping("/employee/{id}")
     public ResponseEntity<Employee> deleteEmployee(@PathVariable long id){
         employeeService.deleteEmployee(id);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/employee/topic")
+    public ResponseEntity<?> WriteMessageOnResignationTopic(@RequestBody EmployeeResignationMessage message){
+        employeeService.writeResignationMessageOnTopic(message);
         return ResponseEntity.ok(null);
     }
 

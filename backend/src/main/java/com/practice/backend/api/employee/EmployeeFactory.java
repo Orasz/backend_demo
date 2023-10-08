@@ -3,6 +3,7 @@ package com.practice.backend.api.employee;
 import com.practice.backend.api.employee.dto.EmployeeDto;
 import com.practice.backend.api.employee.model.Employee;
 import com.practice.backend.api.employee.model.Hobby;
+import com.practice.backend.api.employee.repository.HobbyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

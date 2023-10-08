@@ -1,4 +1,4 @@
-package com.practice.backend.api.employee;
+package com.practice.backend.api.employee.repository;
 
 import com.practice.backend.api.employee.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
