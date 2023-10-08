@@ -1,8 +1,8 @@
 # backend_demo
 Demo Project for practice
 
-![overview drawio](https://github.com/Orasz/backend_demo/assets/26349651/c2c0f025-6f6d-456e-96cd-58abb1c62fa4)
 
+![overview drawio (2)](https://github.com/Orasz/backend_demo/assets/26349651/0c0f6ec6-d42e-4271-912b-192fe66d68f1)
 
 # Getting Started
 
