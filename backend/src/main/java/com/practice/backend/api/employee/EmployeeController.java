@@ -62,7 +62,7 @@ public class EmployeeController {
             tags = { "employee", "post" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Employee.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
+            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     @PostMapping ("/employee")
     @Transactional
     public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {

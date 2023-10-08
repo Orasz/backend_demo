@@ -41,3 +41,10 @@ Now it should be possible to launch the Spring Boot application without any issu
 
 Your Employee API is ready to use ^^
 
+## next steps:
+* improve test suite (Kafka module)
+* add a scheduler to delete the employees who resigned (instead of dumb actual implementation)
+* secure the API with Spring Security
+* Enrich and optimise data model (use an explicit join table and 2 one-to-many relationships instead of one many-to-many)
+* Implementation of standalone hobby API
+
