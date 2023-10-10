@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  postgres:
+    image: postgres:alpine
+    container_name: dockerdb
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      # copy the sql script to create tables
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
@@ -14,3 +26,4 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "create_topic:1:1,update_topic:1:1,delete_topic:1:1,employee_events:1:1"
