@@ -1,13 +1,14 @@
 version: '3'
 
 services:
-  postgres:
+  dockerdb:
     image: postgres:alpine
     container_name: dockerdb
     restart: always
     environment:
-      - POSTGRES_USER=postgres
+      - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=dockerdb
     ports:
       - '5432:5432'
     volumes:
