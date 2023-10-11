@@ -27,6 +27,8 @@ The following guides illustrate how to use some features concretely:
 
 * Install Docker and docker compose on your local machine (Docker Desktop contains both);
 
+ # old version:
+
 * pull a postgreSQL image and run the container (of course the choice of which relational db to use is free);
 
 * install kafka on your local machine (I have followed this great tutorial https://betterdatascience.com/how-to-install-apache-kafka-using-docker-the-easy-way/?utm_content=cmp-true but I will riasssume the necessary steps here):
@@ -34,9 +36,18 @@ The following guides illustrate how to use some features concretely:
   * connect to the kafka shell: docker exec -it kafka /bin/sh;
   * create a topic: kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic kafka_topic.
 
-
 * The topic I have used are 4: 'create_topic', 'update_topic', 'delete_topic', 'employee-events'.
 * It's possible to create them within the IDE (Intellij & VsCode both have nice plugins for that) or with the command listed above.
+
+
+## NEW VERSION
+* PostgreSQL (initialized with tables & constraints)
+* Zookeeper
+* Kafka
+* the 4 kafka topics used by the application
+
+  Are all provisioned by the docker-compose file in the repository. So it is only necessary to run docker-compose -f docker-compose.yml up in the same folder of the docker file.
+
 
 All the infrastructure necessary to the application is up and running at this point.
 Now it should be possible to launch the Spring Boot application without any issues.
